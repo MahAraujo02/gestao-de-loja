@@ -33,6 +33,7 @@ void excluirItem();
 void pesquisarCategoria();
 void editar_dados();
 void buscarCodigo();
+void ordenar(char v[][50], int tamanho);
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -96,13 +97,13 @@ void GerenciarRoupas (){
 		system("cls");
 		printf("-------------------ROUPAS-------------------\n");
 		printf("1.Cadastrar uma nova peça roupa\n");
-		printf("2.remover uma peça do estoque\n");
-		printf("3.atualizar informaçao da peça \n");
-		printf("4.pesquisar por nome\n");
-		printf("5.pesquisar por categoria\n");
-		printf("6.pesquisar por codigo\n");
-		printf("7.listar peças de roupas disponiveis\n");
-		printf("8.sair\n");
+		printf("2.Remover uma peça do estoque\n");
+		printf("3.Atualizar informaçao da peça \n");
+		printf("4.Pesquisar por nome\n");
+		printf("5.Pesquisar por categoria\n");
+		printf("6.Pesquisar por codigo\n");
+		printf("7.Listar peças de roupas disponiveis\n");
+		printf("8.Sair\n");
 		printf("-------------------------------------------\n");
 
 
@@ -157,7 +158,8 @@ void GerenciarRoupas (){
 }
 
 void inserirDados(){
-	FILE *estoque;
+	FILE* estoque;
+//	FILE* estoque2;
 	int contProd;
 
 	estoque = fopen("Roupas_Disponiveis.txt", "ab");
@@ -166,17 +168,20 @@ void inserirDados(){
 		printf("problemas na abertura do arquivo");
 	}
 	else {
-		
+		cabecalho();
 		printf("insira a quantidade de roupas que deseja cadastrar:\n");
 		scanf("%d", &contProd);
-		cabecalho();
+		
 		int i;
 		
 		for( i = 0; i < contProd; i++){
 			
 			fflush(stdin);
-			printf(" insira o nome da peça: ");
+			printf("------------------------------------\n");
+			printf("insira o nome da peça: ");
 			gets(pdt.nome);
+			
+			ordenar(&pdt.nome, contProd);
 
 			fflush(stdin);
 			printf("insira a categoria: ");
@@ -185,7 +190,22 @@ void inserirDados(){
 			fflush(stdin);
 			printf("insira o codigo: ");
 			gets(pdt.codigo);
-
+			
+			/*estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
+			if(estoque2 == NULL){
+				printf("Problemas na abertura do arquivo.");
+			}
+			else {
+				while(fread(&pdtLeitura, sizeof(produtos),1, estoque2) == 1){
+					if(strcmp(pdt.codigo,pdtLeitura.codigo) == 0){
+						printf("o codigo ja está no sistema.");
+						getch();
+						return;
+					}
+				}
+			}
+			fclose(estoque2);*/
+			
 			printf("insira a data de aquisiçao: ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
@@ -197,6 +217,7 @@ void inserirDados(){
 
 			printf("insira o valor: ");
 			scanf("%f", &pdt.valor);
+			printf("------------------------------------\n");
 			
 
 			fwrite(&pdt, sizeof(produtos),1,estoque);
@@ -208,7 +229,7 @@ void inserirDados(){
 }
 
 void ListarEstoque(){
-	FILE *estoque;
+	FILE* estoque;
 
 	estoque = fopen("Roupas_Disponiveis.txt", "rb");
 
@@ -218,6 +239,7 @@ void ListarEstoque(){
 	}
 	else {
 		while (fread(&pdt, sizeof(produtos),1,estoque )==1){
+			printf("------------------------------------\n");
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
@@ -234,7 +256,7 @@ void ListarEstoque(){
 }
 
 void pesquisarRoupas(){
-	FILE *estoque;
+	FILE* estoque;
 	char nome[50];
 
 	estoque = fopen("Roupas_Disponiveis.txt", "rb");
@@ -271,8 +293,8 @@ void pesquisarRoupas(){
 }
 
 void excluirItem(){
-	FILE *estoque;
-	FILE *estoqueTemp;
+	FILE* estoque;
+	FILE* estoqueTemp;
 	char id[7];
 
 	cabecalho();
@@ -304,7 +326,7 @@ void excluirItem(){
 }
 
 void pesquisarCategoria(){
-		FILE *estoque;
+		FILE* estoque;
 	     char aux[50];
 
 	estoque = fopen("Roupas_Disponiveis.txt", "rb");
@@ -384,8 +406,8 @@ void editar_dados()
         fclose(temp);
         fflush(stdin);
         
-        printf("Tem a certeza que pertende alterar os dados deste/s contactos(S/N)? ");
-	  	if(getche() == 'S')
+        printf("Deseja iniciar a alteraçao dos dados(s/n)? ");
+	  	if(getche() == 's')
 	    {
 	        if(remove("Roupas_Disponiveis.txt") == 0 && rename ("temp.txt", "Roupas_Disponiveis.txt") == 0)
 	            {
@@ -432,7 +454,7 @@ void editar_dados()
  	}
 }
 
-/*void ordenar(char v[][50], int tamanho){
+void ordenar(char v[][50], int tamanho){
 	int i,j;
 	char auxiliar[50];
      for (i = 0; i < tamanho - 1; i++){
@@ -445,12 +467,12 @@ void editar_dados()
 		}
 	}
 
-}*/
+}
 
 void buscarCodigo(){
 	
 	
-	FILE *estoque;
+	FILE* estoque;
   char id[7];
 
 	estoque = fopen("Roupas_Disponiveis.txt", "rb");
