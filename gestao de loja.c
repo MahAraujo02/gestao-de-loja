@@ -11,16 +11,18 @@ typedef struct{
 	int ano;
 }data;
 typedef struct {
-	char nome[50];
 	char categoria[50];
 	char codigo[7];
 	data aquisicao;
 	int quantidade;
 	float custo;
 	float valor;
+	char nome[][50];
 } produtos;
 
 produtos pdt;
+
+int contProd;
 
 void cabecalho();
 
@@ -33,7 +35,7 @@ void excluirItem();
 void pesquisarCategoria();
 void editar_dados();
 void buscarCodigo();
-void ordenar(char v[][50], int tamanho);
+//void ordenar(char v[][50], int tamanho);
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -159,8 +161,8 @@ void GerenciarRoupas (){
 
 void inserirDados(){
 	FILE* estoque;
-//	FILE* estoque2;
-	int contProd;
+	FILE* estoque2;
+	produtos pdtLeitura;
 
 	estoque = fopen("Roupas_Disponiveis.txt", "ab");
 
@@ -171,17 +173,15 @@ void inserirDados(){
 		cabecalho();
 		printf("insira a quantidade de roupas que deseja cadastrar:\n");
 		scanf("%d", &contProd);
-		
+
 		int i;
-		
+
 		for( i = 0; i < contProd; i++){
-			
+
 			fflush(stdin);
 			printf("------------------------------------\n");
 			printf("insira o nome da peça: ");
-			gets(pdt.nome);
-			
-			ordenar(&pdt.nome, contProd);
+			gets(pdt.nome[contProd]);
 
 			fflush(stdin);
 			printf("insira a categoria: ");
@@ -190,22 +190,45 @@ void inserirDados(){
 			fflush(stdin);
 			printf("insira o codigo: ");
 			gets(pdt.codigo);
-			
-			/*estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
+
+		/*	estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
 			if(estoque2 == NULL){
 				printf("Problemas na abertura do arquivo.");
 			}
 			else {
 				while(fread(&pdtLeitura, sizeof(produtos),1, estoque2) == 1){
 					if(strcmp(pdt.codigo,pdtLeitura.codigo) == 0){
-						printf("o codigo ja está no sistema.");
-						getch();
+						printf("o codigo ja está no sistema.\n");
+						printf("deseja inserir novo codigo?(s/n): \n");
+						
+						if(getche() == 's'){
+						fflush(stdin);
+			               printf("\ninsira o codigo: ");
+			               gets(pdt.codigo);
+			               printf("insira a data de aquisiçao: ");
+		                 	scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
+
+		                	printf("insira a quantidade: ");
+		                	scanf("%d", &pdt.quantidade);
+
+			               printf("insira o custo: ");
+			               scanf("%f", &pdt.custo);
+
+			               printf("insira o valor: ");
+		                	scanf("%f", &pdt.valor);
+		                	printf("------------------------------------\n");
+
+		                	fwrite(&pdt, sizeof(produtos),1,estoque2);
+
+			          }
 						return;
 					}
+
 				}
-			}
-			fclose(estoque2);*/
+				fclose(estoque2);
+			}*/
 			
+
 			printf("insira a data de aquisiçao: ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
@@ -219,9 +242,12 @@ void inserirDados(){
 			scanf("%f", &pdt.valor);
 			printf("------------------------------------\n");
 			
+			printf("peça cadastrada com sucesso!");
+			getch();
 
 			fwrite(&pdt, sizeof(produtos),1,estoque);
-		
+
+
 		}
 		fclose(estoque);
 	}
@@ -238,9 +264,10 @@ void ListarEstoque(){
 		printf("problemas na abertura do arquivo");
 	}
 	else {
+		//ordenar(pdt.nome, contProd);
 		while (fread(&pdt, sizeof(produtos),1,estoque )==1){
 			printf("------------------------------------\n");
-			printf("nome: %s\n", pdt.nome);
+			printf("nome: %s\n", pdt.nome[contProd]);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
 			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
@@ -271,7 +298,7 @@ void pesquisarRoupas(){
 		gets(nome);
 
 		while( fread(&pdt, sizeof(produtos),1,estoque) == 1){
-			if(strcmp(nome, pdt.nome) == 0){
+			if(strcmp(nome, pdt.nome[50]) == 0){
 			printf("\n");
 
 			printf("-----------------ITEM---------------\n");
@@ -343,7 +370,6 @@ void pesquisarCategoria(){
 		while( fread(&pdt, sizeof(produtos),1,estoque) == 1){
 			if(strcmp(aux, pdt.categoria) == 0){
 			printf("\n");
-
 			printf("-----------------ITEM---------------\n");
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
@@ -405,32 +431,32 @@ void editar_dados()
         fclose(estoque);
         fclose(temp);
         fflush(stdin);
-        
+
         printf("Deseja iniciar a alteraçao dos dados(s/n)? ");
 	  	if(getche() == 's')
 	    {
 	        if(remove("Roupas_Disponiveis.txt") == 0 && rename ("temp.txt", "Roupas_Disponiveis.txt") == 0)
 	            {
 	            	FILE* estoque;
-					
+
 					estoque = fopen("Roupas_Disponiveis.txt", "ab");
-	            	
+
 	         	printf("\n--------------ALTERAÇAO------------\n");
 			fflush(stdin);
 			printf(" insira o nome da peça: ");
-			gets(pdt.nome);
+			gets(pdt.nome[50]);
 
 			fflush(stdin);
 			printf("insira a categoria: ");
 			gets(pdt.categoria);
-			
+
 			fflush(stdin);
 			printf("insira o novo codigo: ");
 			gets(pdt.codigo);
 
 			printf("insira a nova quantidade: ");
 			scanf("%d", &pdt.quantidade);
-		
+
 		     printf("insira nova data de aquisiçao: ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
@@ -454,7 +480,7 @@ void editar_dados()
  	}
 }
 
-void ordenar(char v[][50], int tamanho){
+/*void ordenar(char v[][50], int tamanho){
 	int i,j;
 	char auxiliar[50];
      for (i = 0; i < tamanho - 1; i++){
@@ -467,11 +493,11 @@ void ordenar(char v[][50], int tamanho){
 		}
 	}
 
-}
+}*/
 
 void buscarCodigo(){
-	
-	
+
+
 	FILE* estoque;
   char id[7];
 
