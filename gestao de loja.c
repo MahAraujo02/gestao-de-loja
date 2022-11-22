@@ -19,13 +19,19 @@ typedef struct {
 	float valor;
 	char nome[50];
 } produtos;
-
 produtos pdt;
 
-int contProd;
+typedef struct {
+	char nomeCli[50];
+	char codigoCli[7];
+	int CPF;
+	char telefoneCli[15];
+	char enderecoCli[50];
+	data nascimentoCli;
+} cliente;
+cliente Cli;
 
 void cabecalho();
-
 //fun�oes que gerenciam as a�oes relacionadas �s roupas
 void GerenciarRoupas();
 void inserirDados();
@@ -35,7 +41,9 @@ void excluirItem();
 void pesquisarCategoria();
 void editar_dados();
 void buscarCodigo();
-//void ordenar(char v[][50], int tamanho);
+
+//funçoes que gereciam as açoes relacionadas ao cliente
+void CadastrarCliente();
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -486,4 +494,26 @@ void buscarCodigo(){
 	fclose(estoque);
 	getch();
   }
+}
+
+void CadastrarCliente(){
+	
+/*
+    cout <<"\n Digite o nome do Cliente: ";
+    cin.ignore();
+    getline(cin, nome);
+    cout <<"\n Digite o codigo do Cliente: ";
+    cin >> codigo;
+    cout <<"\n Digite o CPF do Cliente: ";
+    cin >> cpf;
+    cout <<"\n Digite o telefone para contato: ";
+    cin >> telefone;
+    cout <<"\n Digite o endereco do Cliente: ";
+    cin.ignore();
+    getline(cin, endereco);
+    cout <<"\n Digite a data de nascimento do Cliente: ";
+    cin >> nascimento;
+    cout <<"\n Cliente cadastrado com sucesso!!!\n ";
+}*/
+	
 }
