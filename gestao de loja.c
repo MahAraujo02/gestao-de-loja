@@ -12,7 +12,7 @@ typedef struct{
 }data;
 typedef struct {
 	char categoria[50];
-	char codigo[7];
+	char codigo[10];
 	data aquisicao;
 	int quantidade;
 	float custo;
@@ -23,8 +23,8 @@ produtos pdt;
 
 typedef struct {
 	char nomeCli[50];
-	char codigoCli[7];
-	int CPF;
+	char codigoCli[5];
+	char CPF[12];
 	char telefoneCli[15];
 	char enderecoCli[50];
 	data nascimentoCli;
@@ -44,6 +44,7 @@ void buscarCodigo();
 
 //funçoes que gereciam as açoes relacionadas ao cliente
 void CadastrarCliente();
+void inserirDadosCli();
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -67,6 +68,7 @@ int main (){
       break;
 
       case 2:
+      	 CadastrarCliente();
       break;
 
       case 3:
@@ -106,7 +108,7 @@ void GerenciarRoupas (){
 	do {
 		system("cls");
 		printf("-------------------ROUPAS-------------------\n");
-		printf("1.Cadastrar uma nova pe�a roupa\n");
+		printf("1.Cadastrar uma nova peça roupa\n");
 		printf("2.Remover uma pe�a do estoque\n");
 		printf("3.Atualizar informa�ao da pe�a \n");
 		printf("4.Pesquisar por nome\n");
@@ -172,8 +174,6 @@ void inserirDados(){
 	FILE* estoque2;
 	produtos pdtLeitura;
 
-	char sn;
-
 	estoque = fopen("Roupas_Disponiveis.txt", "ab");
 
 	if (estoque == NULL){
@@ -185,7 +185,7 @@ void inserirDados(){
 
 			fflush(stdin);
 			printf("------------------------------------\n");
-			printf("insira o nome da pe�a: ");
+			printf("insira o nome da peça: ");
 			fgets(pdt.nome,50,stdin);
 
 			fflush(stdin);
@@ -196,7 +196,7 @@ void inserirDados(){
 			printf("insira o codigo: ");
 			gets(pdt.codigo);
 
-			printf("insira a data de aquisi�ao: ");
+			printf("insira a data de aquisiçao (dd mm aaaa): ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
 			printf("insira a quantidade: ");
@@ -483,12 +483,12 @@ void buscarCodigo(){
 			printf("custo: %.2f\n", pdt.custo);
 			printf("valor: %.2f\n", pdt.valor);
 			printf("------------------------------------\n");
-			} 
-			
+			}
+
 			if (strcmp(id, pdt.codigo) != 0 ){
 				printf("codigo nao encontrado\n");
 			}
-			
+
 
 	}
 	fclose(estoque);
@@ -498,22 +498,104 @@ void buscarCodigo(){
 
 void CadastrarCliente(){
 	
-/*
-    cout <<"\n Digite o nome do Cliente: ";
-    cin.ignore();
-    getline(cin, nome);
-    cout <<"\n Digite o codigo do Cliente: ";
-    cin >> codigo;
-    cout <<"\n Digite o CPF do Cliente: ";
-    cin >> cpf;
-    cout <<"\n Digite o telefone para contato: ";
-    cin >> telefone;
-    cout <<"\n Digite o endereco do Cliente: ";
-    cin.ignore();
-    getline(cin, endereco);
-    cout <<"\n Digite a data de nascimento do Cliente: ";
-    cin >> nascimento;
-    cout <<"\n Cliente cadastrado com sucesso!!!\n ";
-}*/
-	
+	int op;
+
+	do {
+		system("cls");
+		printf("-------------------ROUPAS-------------------\n");
+		printf("1.Cadastrar cliente\n");
+		printf("2.Remover cliente\n");
+		printf("3.Alterar dados do cliente \n");
+		printf("4.Pesquisar por nome\n");
+		printf("5.Pesquisar por codigo\n");
+		printf("6.Pesquisar por CPF\n");
+		printf("7.Listar clientes\n");
+		printf("8.Sair\n");
+		printf("-------------------------------------------\n");
+
+
+		printf("\nSelecione a opçao desejada: ");
+		scanf("%d", &op);
+
+		switch(op){
+
+      case 1:
+      	inserirDadosCli();
+      break;
+
+      case 2:
+      	//excluirCliente();
+      break;
+
+      case 3:
+         // editar_dadosCli();
+      break;
+
+      case 4:
+      	//pesquisarCliente();
+      break;
+
+      case 5:
+      	//pesquisarCodigo();
+      break;
+
+      case 6:
+      //	buscarCPF();
+
+      break;
+
+      case 7:
+      //	ListarClientes();
+      break;
+
+       case 8:
+     	printf("ate mais!");
+      	getch();
+      break;
+
+      default:
+          printf("op�ao invalida!");
+          getch();
+
+		}
+
+	}while(op !=8 );
+
+
 }
+
+void inserirDadosCli() {
+	FILE *CLIENTE;
+	CLIENTE = fopen("clientes_cadastrados.txt","ab");
+	
+	do {
+		
+		fflush(stdin);
+		printf("Inserir o nome do cliente: ");
+		fgets(Cli.nomeCli, 50, stdin);
+		
+		fflush(stdin);
+		printf("Inserir o CPF do cliente: ");
+		fgets(Cli.CPF,12,stdin);
+		
+		fflush(stdin);
+		printf("Inserir o codigo do cliente: ");
+		fgets(Cli.codigoCli,5,stdin);
+		
+		fflush(stdin);
+		printf("Inserir o telefone do cliente: ");
+		fgets(Cli.telefoneCli,15,stdin);
+		
+		fflush(stdin);
+		printf("Inserir a data de nascimento dos cliente: ");
+		scanf("%d %d %d", &Cli.nascimentoCli.dia, &Cli.nascimentoCli.mes, &Cli.nascimentoCli.ano);
+		
+		fwrite(&Cli, sizeof(cliente), 1, CLIENTE);
+		
+		printf("\ndeseja continuar (s/n)?\n");
+
+	}while(getche() == 's');
+	fclose(CLIENTE);
+}
+
+
