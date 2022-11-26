@@ -32,7 +32,10 @@ typedef struct {
 cliente Cli;
 
 void cabecalho();
+
 //funçoes que gerenciam as açoes relacionadas as roupas
+
+
 void GerenciarRoupas();
 void inserirDados();
 void ListarEstoque();
@@ -42,7 +45,9 @@ void pesquisarCategoria();
 void editar_dados();
 void buscarCodigo();
 
+
 //funçoes que gereciam as açoes relacionadas ao cliente
+
 void CadastrarCliente();
 void inserirDadosCli();
 
@@ -58,7 +63,7 @@ int main (){
   	printf("4 - cadastrar vendas\n");
   	printf("5 - Sair\n");
 
-  	printf("\ndigite a opçao desejada: \n");
+  	printf("\ndigite a opï¿½ao desejada: \n");
   	scanf("%d", &opc);
 
   	switch(opc){
@@ -83,7 +88,7 @@ int main (){
       break;
 
       default:
-      	printf("opçao invalida!");
+      	printf("opÃ§ao invalida!");
           getch();
 	  }
 
@@ -95,7 +100,7 @@ int main (){
 void cabecalho(){
 	system("cls");
 	printf("-------------------------------------------\n");
-	printf("ADMINISTRAÇAO DA LOJA\n");
+	printf("ADMINISTRAÃ‡AO DA LOJA\n");
 	printf("-------------------------------------------\n\n");
 
 }
@@ -108,18 +113,18 @@ void GerenciarRoupas (){
 	do {
 		system("cls");
 		printf("-------------------ROUPAS-------------------\n");
-		printf("1.Cadastrar uma nova peça roupa\n");
-		printf("2.Remover uma peça do estoque\n");
-		printf("3.Atualizar informaçao da peça \n");
+		printf("1.Cadastrar uma nova peÃ§a roupa\n");
+		printf("2.Remover uma peÃ§a do estoque\n");
+		printf("3.Atualizar informaÃ§ao da peÃ§a \n");
 		printf("4.Pesquisar por nome\n");
 		printf("5.Pesquisar por categoria\n");
 		printf("6.Pesquisar por codigo\n");
-		printf("7.Listar peças de roupas disponiveis\n");
+		printf("7.Listar peÃ§as de roupas disponiveis\n");
 		printf("8.Sair\n");
 		printf("-------------------------------------------\n");
 
 
-		printf("\nescolha uma opçao: ");
+		printf("\nescolha uma opÃ§ao: ");
 		scanf("%d", &op);
 
 		switch(op){
@@ -154,12 +159,12 @@ void GerenciarRoupas (){
       break;
 
        case 8:
-     	printf("até mais!!");
+     	printf("atÃ© mais!!");
       	getch();
       break;
 
       default:
-          printf("opçao invalida!");
+          printf("opÃ§ao invalida!");
           getch();
 
 		}
@@ -185,7 +190,11 @@ void inserirDados(){
 
 			fflush(stdin);
 			printf("------------------------------------\n");
+
 			printf("insira o nome da peça: ");
+
+			printf("insira o nome da peÃ§a: ");
+
 			fgets(pdt.nome,50,stdin);
 
 			fflush(stdin);
@@ -194,6 +203,7 @@ void inserirDados(){
 
 			fflush(stdin);
 			printf("insira o codigo: ");
+
 			fgets(pdt.codigo,10,stdin);
 			
 		estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
@@ -212,6 +222,10 @@ void inserirDados(){
 				}
 				fclose(estoque);
 			printf("insira a data de aquisiçao (dd mm aaaa): ");
+
+			gets(pdt.codigo);
+
+			printf("insira a data de aquisiÃ§ao (dd mm aaaa): ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
 			printf("insira a quantidade: ");
@@ -225,6 +239,7 @@ void inserirDados(){
 			printf("------------------------------------\n");
 
 			printf("peça cadastrada com sucesso!");
+	
 			getch();
 
 			fwrite(&pdt, sizeof(produtos),1,estoque);
@@ -292,7 +307,7 @@ void pesquisarRoupas(){
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
-			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
+			printf("data de aquisiÃ§ao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
 			printf("quantidade: %d\n", pdt.quantidade);
 			printf("custo: %.2f\n", pdt.custo);
 			printf("valor: %.2f\n", pdt.valor);
@@ -361,7 +376,7 @@ void pesquisarCategoria(){
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
-			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
+			printf("data de aquisiÃ§ao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
 			printf("quantidade: %d\n", pdt.quantidade);
 			printf("custo: %.2f\n", pdt.custo);
 			printf("valor: %.2f\n", pdt.valor);
@@ -404,7 +419,7 @@ void editar_dados()
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
-			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
+			printf("data de aquisiÃ§ao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
 			printf("quantidade: %d\n", pdt.quantidade);
 			printf("custo: %.2f\n", pdt.custo);
 			printf("valor: %.2f\n", pdt.valor);
@@ -419,7 +434,7 @@ void editar_dados()
         fclose(temp);
         fflush(stdin);
 
-        printf("Deseja iniciar a alteraçao dos dados(s/n)? ");
+        printf("Deseja iniciar a alteraÃ§ao dos dados(s/n)? ");
 	  	if(getche() == 's')
 	    {
 	        if(remove("Roupas_Disponiveis.txt") == 0 && rename ("temp.txt", "Roupas_Disponiveis.txt") == 0)
@@ -428,12 +443,11 @@ void editar_dados()
 
 					estoque = fopen("Roupas_Disponiveis.txt", "ab");
 
-	         	printf("\n--------------ALTERAÇAO------------\n");
+	         	printf("\n--------------ALTERAÃ‡AO------------\n");
 			fflush(stdin);
 			printf(" insira o nome da peça: ");
-			gets(pdt.nome);
-
 			fflush(stdin);
+			
 			printf("insira a categoria: ");
 			gets(pdt.categoria);
 
@@ -444,7 +458,7 @@ void editar_dados()
 			printf("insira a nova quantidade: ");
 			scanf("%d", &pdt.quantidade);
 
-		     printf("insira nova data de aquisiçao: ");
+		     printf("insira nova data de aquisiÃ§ao: ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
 			printf("insira o novo custo: ");
@@ -493,7 +507,7 @@ void buscarCodigo(){
 			printf("nome: %s\n", pdt.nome);
 			printf("categoria: %s\n", pdt.categoria);
 			printf("codigo: %s\n", pdt.codigo);
-			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
+			printf("data de aquisiÃ§ao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
 			printf("quantidade: %d\n", pdt.quantidade);
 			printf("custo: %.2f\n", pdt.custo);
 			printf("valor: %.2f\n", pdt.valor);
@@ -530,6 +544,7 @@ void CadastrarCliente(){
 
 
 		printf("\nSelecione a opçao desejada: ");
+
 		scanf("%d", &op);
 
 		switch(op){
