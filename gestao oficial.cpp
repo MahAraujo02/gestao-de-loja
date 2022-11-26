@@ -12,21 +12,27 @@ typedef struct{
 }data;
 typedef struct {
 	char categoria[50];
-	char codigo[7];
+	char codigo[10];
 	data aquisicao;
 	int quantidade;
 	float custo;
 	float valor;
-	char nome[][50];
+	char nome[50];
 } produtos;
-
 produtos pdt;
 
-int contProd;
+typedef struct {
+	char nomeCli[50];
+	char codigoCli[5];
+	char CPF[12];
+	char telefoneCli[15];
+	char enderecoCli[50];
+	data nascimentoCli;
+} cliente;
+cliente Cli;
 
 void cabecalho();
-
-//funçoes que gerenciam as açoes relacionadas às roupas
+//funçoes que gerenciam as açoes relacionadas as roupas
 void GerenciarRoupas();
 void inserirDados();
 void ListarEstoque();
@@ -35,7 +41,10 @@ void excluirItem();
 void pesquisarCategoria();
 void editar_dados();
 void buscarCodigo();
-//void ordenar(char v[][50], int tamanho);
+
+//funçoes que gereciam as açoes relacionadas ao cliente
+void CadastrarCliente();
+void inserirDadosCli();
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -59,6 +68,7 @@ int main (){
       break;
 
       case 2:
+      	 CadastrarCliente();
       break;
 
       case 3:
@@ -171,65 +181,37 @@ void inserirDados(){
 	}
 	else {
 		cabecalho();
-		printf("insira a quantidade de roupas que deseja cadastrar:\n");
-		scanf("%d", &contProd);
-
-		int i;
-
-		for( i = 0; i < contProd; i++){
+		do {
 
 			fflush(stdin);
 			printf("------------------------------------\n");
 			printf("insira o nome da peça: ");
-			gets(pdt.nome[contProd]);
+			fgets(pdt.nome,50,stdin);
 
 			fflush(stdin);
 			printf("insira a categoria: ");
-			gets(pdt.categoria);
+			fgets(pdt.categoria,50,stdin);
 
 			fflush(stdin);
 			printf("insira o codigo: ");
-			gets(pdt.codigo);
-
-		/*	estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
-			if(estoque2 == NULL){
+			fgets(pdt.codigo,10,stdin);
+			
+		estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
+		   	if(estoque2 == NULL){
 				printf("Problemas na abertura do arquivo.");
 			}
 			else {
 				while(fread(&pdtLeitura, sizeof(produtos),1, estoque2) == 1){
 					if(strcmp(pdt.codigo,pdtLeitura.codigo) == 0){
 						printf("o codigo ja está no sistema.\n");
-						printf("deseja inserir novo codigo?(s/n): \n");
-						
-						if(getche() == 's'){
-						fflush(stdin);
-			               printf("\ninsira o codigo: ");
-			               gets(pdt.codigo);
-			               printf("insira a data de aquisiçao: ");
-		                 	scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
-
-		                	printf("insira a quantidade: ");
-		                	scanf("%d", &pdt.quantidade);
-
-			               printf("insira o custo: ");
-			               scanf("%f", &pdt.custo);
-
-			               printf("insira o valor: ");
-		                	scanf("%f", &pdt.valor);
-		                	printf("------------------------------------\n");
-
-		                	fwrite(&pdt, sizeof(produtos),1,estoque2);
 
 			          }
-						return;
+						return ;
 					}
-
+                   
 				}
-				fclose(estoque2);
-			}*/
-			
-
-			printf("insira a data de aquisiçao: ");
+				fclose(estoque);
+			printf("insira a data de aquisiçao (dd mm aaaa): ");
 			scanf("%d%d%d", &pdt.aquisicao.dia, &pdt.aquisicao.mes, &pdt.aquisicao.ano);
 
 			printf("insira a quantidade: ");
@@ -241,18 +223,23 @@ void inserirDados(){
 			printf("insira o valor: ");
 			scanf("%f", &pdt.valor);
 			printf("------------------------------------\n");
-			
+
 			printf("peça cadastrada com sucesso!");
 			getch();
 
 			fwrite(&pdt, sizeof(produtos),1,estoque);
 
+			printf("\ndeseja continuar (s/n)?\n");
+
+        } while (getche() == 's');
+         fclose(estoque);
+			}
+
 
 		}
-		fclose(estoque);
-	}
 
-}
+
+
 
 void ListarEstoque(){
 	FILE* estoque;
@@ -264,12 +251,12 @@ void ListarEstoque(){
 		printf("problemas na abertura do arquivo");
 	}
 	else {
-		//ordenar(pdt.nome, contProd);
+
 		while (fread(&pdt, sizeof(produtos),1,estoque )==1){
 			printf("------------------------------------\n");
-			printf("nome: %s\n", pdt.nome[contProd]);
-			printf("categoria: %s\n", pdt.categoria);
-			printf("codigo: %s\n", pdt.codigo);
+			printf("nome: %s", pdt.nome);
+			printf("categoria: %s", pdt.categoria);
+			printf("codigo: %s", pdt.codigo);
 			printf("data de aquisiçao: %d/%d/%d\n",pdt.aquisicao.dia, pdt.aquisicao.mes, pdt.aquisicao.ano);
 			printf("quantidade: %d\n", pdt.quantidade);
 			printf("custo: %.2f\n", pdt.custo);
@@ -295,10 +282,10 @@ void pesquisarRoupas(){
 	else {
 		fflush(stdin);
 		printf("digite o nome a pesquisar: ");
-		gets(nome);
+		fgets(nome,50,stdin);
 
 		while( fread(&pdt, sizeof(produtos),1,estoque) == 1){
-			if(strcmp(nome, pdt.nome[50]) == 0){
+			if(strcmp(nome, pdt.nome) == 0){
 			printf("\n");
 
 			printf("-----------------ITEM---------------\n");
@@ -399,7 +386,7 @@ void editar_dados()
 
     if(estoque== NULL && temp == NULL)
     {
-	    printf("Não foi possível abrir o arquivo\n");
+	    printf("Não foi possivel abrir o arquivo\n");
 	    getch();
     }
     else
@@ -444,7 +431,7 @@ void editar_dados()
 	         	printf("\n--------------ALTERAÇAO------------\n");
 			fflush(stdin);
 			printf(" insira o nome da peça: ");
-			gets(pdt.nome[50]);
+			gets(pdt.nome);
 
 			fflush(stdin);
 			printf("insira a categoria: ");
@@ -480,20 +467,6 @@ void editar_dados()
  	}
 }
 
-/*void ordenar(char v[][50], int tamanho){
-	int i,j;
-	char auxiliar[50];
-     for (i = 0; i < tamanho - 1; i++){
-     	for(j = i+1; j< tamanho; j++){
-     		if(strcmp(v[i],v[j]) > 0){
-     			strcpy(auxiliar,v[i]);
-     			strcpy(v[i],v[j]);
-     			strcpy(v[j],auxiliar);
-			}
-		}
-	}
-
-}*/
 
 void buscarCodigo(){
 
@@ -527,9 +500,117 @@ void buscarCodigo(){
 			printf("------------------------------------\n");
 			}
 
+			if (strcmp(id, pdt.codigo) != 0 ){
+				printf("codigo nao encontrado\n");
+			}
+
+
 	}
 	fclose(estoque);
 	getch();
   }
 }
+
+void CadastrarCliente(){
+	
+	int op;
+
+	do {
+		system("cls");
+		printf("-------------------ROUPAS-------------------\n");
+		printf("1.Cadastrar cliente\n");
+		printf("2.Remover cliente\n");
+		printf("3.Alterar dados do cliente \n");
+		printf("4.Pesquisar por nome\n");
+		printf("5.Pesquisar por codigo\n");
+		printf("6.Pesquisar por CPF\n");
+		printf("7.Listar clientes\n");
+		printf("8.Sair\n");
+		printf("-------------------------------------------\n");
+
+
+		printf("\nSelecione a opçao desejada: ");
+		scanf("%d", &op);
+
+		switch(op){
+
+      case 1:
+      	inserirDadosCli();
+      break;
+
+      case 2:
+      	//excluirCliente();
+      break;
+
+      case 3:
+         // editar_dadosCli();
+      break;
+
+      case 4:
+      	//pesquisarCliente();
+      break;
+
+      case 5:
+      	//pesquisarCodigo();
+      break;
+
+      case 6:
+      //	buscarCPF();
+
+      break;
+
+      case 7:
+      //	ListarClientes();
+      break;
+
+       case 8:
+     	printf("ate mais!");
+      	getch();
+      break;
+
+      default:
+          printf("opçao invalida!");
+          getch();
+
+		}
+
+	}while(op !=8 );
+
+
+}
+
+void inserirDadosCli() {
+	FILE *CLIENTE;
+	CLIENTE = fopen("clientes_cadastrados.txt","ab");
+	
+	do {
+		
+		fflush(stdin);
+		printf("Inserir o nome do cliente: ");
+		fgets(Cli.nomeCli, 50, stdin);
+		
+		fflush(stdin);
+		printf("Inserir o CPF do cliente: ");
+		fgets(Cli.CPF,12,stdin);
+		
+		fflush(stdin);
+		printf("Inserir o codigo do cliente: ");
+		fgets(Cli.codigoCli,5,stdin);
+		
+		fflush(stdin);
+		printf("Inserir o telefone do cliente: ");
+		fgets(Cli.telefoneCli,15,stdin);
+		
+		fflush(stdin);
+		printf("Inserir a data de nascimento dos cliente: ");
+		scanf("%d %d %d", &Cli.nascimentoCli.dia, &Cli.nascimentoCli.mes, &Cli.nascimentoCli.ano);
+		
+		fwrite(&Cli, sizeof(cliente), 1, CLIENTE);
+		
+		printf("\ndeseja continuar (s/n)?\n");
+
+	}while(getche() == 's');
+	fclose(CLIENTE);
+}
+
 
