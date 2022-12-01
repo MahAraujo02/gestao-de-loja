@@ -22,12 +22,27 @@ typedef struct {
 
 typedef struct {
 	char nomeCli[50];
-	char codigoCli[5];
-	char CPF[13];
+	char codigoCli[8];
+	char CPF[15];
 	char telefoneCli[15];
 	char enderecoCli[50];
 	data nascimentoCli;
 } clientes;
+
+typedef struct {
+    char nome[50];
+	char codigo[5];
+	char telefone [15];
+	char Empresa[30];
+	char email[30];
+	char CNPJ[20];
+}fornecedor;
+
+typedef struct {
+	char codVenda[6];
+	int quantV;
+	float valorT;
+}venda;
 
 void cabecalho();
 
@@ -45,6 +60,17 @@ void excluirItem();
 void gerenciarCliente();
 void inserirDadosCli();
 void excluirCliente();
+void ListarClientes();
+void editar_dadosCli();
+void pesquisarCliente();
+void pesquisarCodigo();
+void buscarCPF();
+
+//funçoes referente ao fornecedor
+void gerenciarFornecedor();
+void cadastrarFornecedor();
+void iserctionSortFornecedor();
+void listarFornecedores();
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -54,7 +80,7 @@ int main (){
      cabecalho();
   	printf("1 - gerenciar roupas\n");
   	printf("2 - gerenciar cliente\n");
-  	printf("3 - gerenciar fornecedor\n");
+  	printf("3 - cadastar fornecedor\n");
   	printf("4 - cadastrar vendas\n");
   	printf("5 - Sair\n");
 
@@ -72,6 +98,7 @@ int main (){
       break;
 
       case 3:
+      	gerenciarFornecedor();
       break;
 
       case 4:
@@ -554,23 +581,23 @@ void gerenciarCliente(){
       break;
 
       case 3:
-         // editar_dadosCli();
+          editar_dadosCli();
       break;
 
       case 4:
-      	//pesquisarCliente();
+      	pesquisarCliente();
       break;
 
       case 5:
-      	//pesquisarCodigo();
+      	pesquisarCodigo();
       break;
 
       case 6:
-      //	buscarCPF();
+      	buscarCPF();
       break;
 
       case 7:
-      //	ListarClientes();
+      	ListarClientes();
       break;
 
        case 8:
@@ -600,12 +627,12 @@ void inserirDadosCli() {
 		fgets(Cli.nomeCli, 50, stdin);
 		
 		fflush(stdin);
-		printf("CPF (000000000-00):");
-		fgets(Cli.CPF,13,stdin);
+		printf("CPF (000.000.000-00):");
+		fgets(Cli.CPF,15,stdin);
 		
 		fflush(stdin);
 		printf("codigo: ");
-		fgets(Cli.codigoCli,5,stdin);
+		fgets(Cli.codigoCli,8,stdin);
 		
 		fflush(stdin);
 		printf("telefone: ");
@@ -629,62 +656,388 @@ void inserirDadosCli() {
 
 void excluirCliente(){
  FILE* CLIENTE;
- FILE* tempCli;
+ FILE* temp;
  
  clientes Cli;
- char cpf[13];
+ char id[8];
  
- CLIENTE = fopen("clientes.txt","rb");//abrir em modo rb leitura binaria
- tempCli = fopen("tempCli.txt","wb");//abrir em modo wb ele limpa e grava binario
+ CLIENTE = fopen("clientes.txt","rb");
+ temp = fopen("tempcli.txt","wb");
  
- if(CLIENTE==NULL && tempCli==NULL){
+ if(CLIENTE==NULL && temp==NULL){
   printf("Problemas na abertura do arquivo!\n");
   getch();
  }
  else{
   cabecalho();
   fflush(stdin);
-  printf("Digite o CPF do cliente que deseja remover: ");
-  fgets(cpf,13,stdin);
+  printf("Digite o codigo do cliente que deseja remover: ");
+  fgets(id,8,stdin);
   
-  while(fread(&Cli,sizeof(roupas),1,CLIENTE)==1){
-   if(strcmp(cpf,Cli.CPF)==0){
+  while(fread(&Cli,sizeof(clientes),1,CLIENTE)==1){
+   if(strcmp(id,Cli.codigoCli)==0){
     
-    		printf("-----------------CLIENTE---------------\n");
-			printf("nome: %s\n", Cli.nomeCli);
-			printf("CPF: %s\n",Cli.CPF);
-			printf("codigo: %s\n",Cli.codigoCli );
-			printf("telefone: %s\n",Cli.telefoneCli );
-			printf("data de nascimento: %d/%d/%d\n",Cli.nascimentoCli.dia,Cli.nascimentoCli.mes,Cli.nascimentoCli.ano);
-			printf("endereço: %s \n",Cli.enderecoCli);
+    		printf("---------------CLIENTE-------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
 			printf("------------------------------------\n");
     
    }
    else{
-    fwrite(&Cli,sizeof(clientes),1,tempCli);
+    fwrite(&Cli,sizeof(clientes),1,temp);
    }
   }
   fclose(CLIENTE);
-  fclose(tempCli);
+  fclose(temp);
   fflush(stdin);
   
-  printf("Deseja deletar o/a cliente (s/n)? ");
+  printf("Deseja remover (s/n)? ");
   if(getche()=='s'){
-   if(remove("clientes.txt") == 0 && rename ("tempCli.txt","clientes.txt")==0)
-   {
+  
+   if(remove("clientes.txt")==0 && rename ("tempcli.txt","clientes.txt")==0){//verifica se as operacoes foram realizadas com sucesso!
     printf("\nOperacao realizada com sucesso!");
    }
    else{
-    remove("tempCli.txt");
+    remove("tempcli.txt");
    }
   }
-  fclose(tempCli);
+  fclose(temp);
   fclose(CLIENTE);
   getch();
  } 
-	
 }
 
+void ListarClientes(){
+	FILE *CLIENTE;
+	CLIENTE = fopen("clientes.txt","rb");
+	
+    clientes Cli;
+	
+	cabecalho();
+		if (CLIENTE == NULL){
+		printf("problemas na abertura do arquivo");
+	}
+	else {
+		
+		while (fread(&Cli, sizeof(clientes),1,CLIENTE)==1){
+			printf("------------------------------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
+			printf("------------------------------------\n");
+		}
+		
+   }fclose(CLIENTE);
+   getch();
+}
+
+void editar_dadosCli(){
+	FILE* CLIENTE;
+    FILE* tempcli;
+    clientes Cli;
+    char id[8];
+
+	CLIENTE = fopen("clientes.txt","rb");
+	tempcli = fopen("tempclientes.txt","wb");
+
+    if(CLIENTE == NULL && tempcli == NULL)
+    {
+	    printf("Não foi possível abrir o arquivo\n");
+	    getch();
+    }
+    else
+    {
+    	system("cls");
+    	cabecalho();
+    	fflush(stdin);
+    	printf("Digite o codigo do cliente que pretende editar: ");
+    	fgets(id,10,stdin);
+
+    	while(fread(&Cli, sizeof(clientes), 1, CLIENTE) == 1)
+    	{
+        	if(strcmp(id, Cli.codigoCli) == 0)
+        	{
+	           
+			printf("---------------CLIENTE-------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
+			printf("------------------------------------\n");
+        	}
+	        else
+	        {
+	            fwrite(&Cli, sizeof(clientes), 1, tempcli);
+	        }
+	    }
+	}
+        fclose(CLIENTE);
+        fclose(tempcli);
+        fflush(stdin);
+        
+        printf("Tem a certeza que pretende alterar os dados do cliente? (s/n)\n");
+	  	if(getche() == 's')
+	    {
+	        if(remove("clientes.txt") == 0 && rename ("tempclientes.txt", "clientes.txt") == 0)
+	            {
+	            	FILE* CLIENTE;
+					clientes Cli;
+					
+					CLIENTE = fopen("clientes.txt", "ab");
+	               	
+	             	fflush(stdin);
+	             	printf("nome do cliente: ");
+	             	fgets(Cli.nomeCli, 50, stdin);
+		
+	              	fflush(stdin);
+              		printf("CPF (000.000.000-00):");
+	            	fgets(Cli.CPF,15,stdin);
+		
+	             	fflush(stdin);
+	            	printf("codigo: ");
+	            	fgets(Cli.codigoCli,8,stdin);
+	 	
+	            	fflush(stdin);
+	             	printf("telefone: ");
+	            	fgets(Cli.telefoneCli,15,stdin);
+		
+	             	fflush(stdin);
+		            printf("data de nascimento: ");
+	            	scanf("%d %d %d", &Cli.nascimentoCli.dia, &Cli.nascimentoCli.mes, &Cli.nascimentoCli.ano);
+		
+	             	fflush(stdin);
+	             	printf("endereço: ");
+	            	fgets(Cli.enderecoCli,50,stdin);
+		        	printf("------------------------------------\n");
+					fwrite(&Cli, sizeof(clientes), 1, CLIENTE);
+					
+					printf("\n Dados alterados com sucesso!\n");
+	            }
+	        else
+	            {
+	                remove("tempclientes.txt");
+	            }
+	    }
+	    fclose(tempcli);
+	    fclose(CLIENTE);
+	    getch();
+
+}
+void pesquisarCliente(){
+	FILE *CLIENTE;
+	clientes Cli;
+	char nome[50];
+	
+	cabecalho();
+	CLIENTE = fopen("clientes.txt","rb");
+		if (CLIENTE == NULL){
+		printf("problemas na abertura do arquivo");
+	}
+	else {
+		fflush(stdin);
+		printf("insira o nome do cliente que deseja pesquisar:");
+		fgets(nome,50,stdin);
+		
+		while(fread(&Cli, sizeof(clientes),1,CLIENTE) == 1){
+			if (strcmp(nome,Cli.nomeCli)==0){
+			printf("\n");
+	    	printf("---------------CLIENTE-------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
+			printf("------------------------------------\n");
+
+			}
+		}
+		if(strcmp(nome,Cli.nomeCli)!=0){
+		    printf("nome nao encontrado\n");
+     	}
+	}
+	fclose(CLIENTE);
+	getch();
+}
+
+void pesquisarCodigo(){
+	FILE *CLIENTE;
+	clientes Cli;
+	char cod[50];
+	
+	cabecalho();
+	CLIENTE = fopen("clientes.txt","rb");
+		if (CLIENTE == NULL){
+		printf("problemas na abertura do arquivo");
+	}
+	else {
+		fflush(stdin);
+		printf("insira o nome do cliente que deseja pesquisar:");
+		fgets(cod,8,stdin);
+		
+		while(fread(&Cli, sizeof(clientes),1,CLIENTE) == 1){
+			if (strcmp(cod,Cli.codigoCli)==0){
+			printf("\n");
+	    	printf("---------------CLIENTE-------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
+			printf("------------------------------------\n");
+
+			}
+		}
+		if(strcmp(cod,Cli.codigoCli)!=0){
+		    printf("codigo nao encontrado\n");
+     	}
+	}
+	fclose(CLIENTE);
+	getch();
+}
+void buscarCPF() {
+	FILE *CLIENTE;
+	clientes Cli;
+	char cpf[15];
+	
+	cabecalho();
+	CLIENTE = fopen("clientes.txt","rb");
+		if (CLIENTE == NULL){
+		printf("problemas na abertura do arquivo");
+	}
+	else {
+		fflush(stdin);
+		printf("insira o nome do cliente que deseja pesquisar:");
+		fgets(cpf,15,stdin);
+		
+		while(fread(&Cli, sizeof(clientes),1,CLIENTE) == 1){
+			if (strcmp(cpf,Cli.CPF)==0){
+			printf("\n");
+	    	printf("---------------CLIENTE-------------\n");
+			printf("nome:%s\n", Cli.nomeCli);
+			printf("CPF:%s\n", Cli.CPF);
+			printf("codigo:%s\n", Cli.codigoCli);
+			printf("data de nascimento:%d/%d/%d\n",Cli.nascimentoCli.dia, Cli.nascimentoCli.mes, Cli.nascimentoCli.ano);
+			printf("telefone: %s", Cli.telefoneCli);
+			printf("endereço: %s\n", Cli.enderecoCli);
+			printf("------------------------------------\n");
+
+			}
+		}
+		if(strcmp(cpf,Cli.CPF)!=0){
+		    printf("CPF nao encontrado\n");
+     	}
+	}
+	fclose(CLIENTE);
+	getch();
+}
+
+void gerenciarFornecedor(){	
+
+	int op;
+
+	do {
+		system("cls");
+		printf("----------------FORNECEDOR-----------------\n");
+		printf("1.Cadastrar fornecedor\n");
+		printf("2.Listar fornecedor\n");
+		printf("3.Sair\n");
+		printf("-------------------------------------------\n");
 
 
+		printf("\nescolha uma opçao: ");
+		scanf("%d", &op);
 
+		switch(op){
+
+      case 1:
+        cadastrarFornecedor();
+      break;
+
+      case 2:
+      	listarFornecedores();
+      break;
+       case 3:
+     	printf("até mais!!");
+      	getch();
+      break;
+
+      default:
+          printf("opçao invalida!");
+          getch();
+
+		}
+
+	}while(op !=3 );
+	
+	
+	
+}
+void cadastrarFornecedor(){
+FILE *fornecedores;
+fornecedor f[2];
+int i;
+
+fornecedores = fopen("fornecedorl.txt","ab");
+for(i = 0; i<2; i++){
+	
+	printf("-------------------------------------------\n");
+	fflush(stdin);
+	printf("nome do fornecedor: ");
+	fgets(f[i].nome,50,stdin);
+	
+	fflush(stdin);
+	printf("codigo: ");
+	fgets(f[i].codigo,5,stdin);
+	
+	fflush(stdin);
+	printf("telefone:" );
+	fgets(f[i].telefone,15,stdin);
+	
+	fflush(stdin);
+	printf("empresa fornecedora: ");
+	fgets(f[i].Empresa,30,stdin);
+	
+	fflush(stdin);
+	printf("e-mail da empresa : ");
+	fgets(f[i].email,30,stdin);
+	
+	fflush(stdin);
+	printf("CNPJ da empresa: ");
+	fgets(f[i].CNPJ,20,stdin);
+	printf("-------------------------------------------\n");
+	
+	fwrite(&f[i],sizeof(fornecedor),1,fornecedores);
+	
+   }
+   fclose(fornecedores);
+}
+void listarFornecedores(){
+	FILE *fornecedores;
+	fornecedor f[2];
+
+	int i;
+	for (i=0;i<3;i++){		
+		fornecedores = fopen("fornecedorl.txt", "rb");
+		printf("-------------------------------------------\n");
+		printf("nome do fornecedor:%s\n",f[i].nome);
+		printf("codigo:%s\n",f[i].codigo);
+		printf("telefone:%s\n",f[i].telefone);
+		printf("empresa:%s\n",f[i].Empresa);
+		printf("email:%s\n",f[i].email);
+		printf("CNPJ:%s\n",f[i].CNPJ);
+		printf("-------------------------------------------\n");
+	}
+	fclose(fornecedores);
+	getch();
+	}
