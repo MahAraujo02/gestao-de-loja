@@ -50,6 +50,7 @@ void buscarCodigo();
 
 void CadastrarCliente();
 void inserirDadosCli();
+void excluirCliente();
 
 int main (){
   setlocale(LC_ALL, "Portuguese");
@@ -229,7 +230,6 @@ void inserirDados(){
         } while (getche() == 's');
          fclose(estoque);
 			}
-
 
 		}
 
@@ -516,10 +516,9 @@ void CadastrarCliente(){
 		printf("2.Remover cliente\n");
 		printf("3.Alterar dados do cliente \n");
 		printf("4.Pesquisar por nome\n");
-		printf("5.Pesquisar por codigo\n");
-		printf("6.Pesquisar por CPF\n");
-		printf("7.Listar clientes\n");
-		printf("8.Sair\n");
+		printf("5.Pesquisar por CPF\n");
+		printf("6.Listar clientes\n");
+		printf("7.Sair\n");
 		printf("-------------------------------------------\n");
 
 
@@ -534,7 +533,7 @@ void CadastrarCliente(){
       break;
 
       case 2:
-      	//excluirCliente();
+      	excluirCliente();
       break;
 
       case 3:
@@ -546,19 +545,14 @@ void CadastrarCliente(){
       break;
 
       case 5:
-      	//pesquisarCodigo();
+      	//	buscarCPF();
       break;
 
       case 6:
-      //	buscarCPF();
-
-      break;
-
-      case 7:
       //	ListarClientes();
       break;
 
-       case 8:
+       case 7:
      	printf("ate mais!");
       	getch();
       break;
@@ -569,14 +563,15 @@ void CadastrarCliente(){
 
 		}
 
-	}while(op !=8 );
-
+	}while(op !=7 );
+099.253.513.61
 
 }
 
 void inserirDadosCli() {
 	FILE *CLIENTE;
 	CLIENTE = fopen("clientes_cadastrados.txt","ab");
+	clientes Cli;
 	
 	do {
 		
@@ -607,5 +602,7 @@ void inserirDadosCli() {
 	}while(getche() == 's');
 	fclose(CLIENTE);
 }
-
+excluirCliente(){
+	
+}
 

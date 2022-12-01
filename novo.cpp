@@ -20,7 +20,17 @@ typedef struct {
 	char nome[30];
 } roupas;
 
+typedef struct {
+	char nomeCli[50];
+	char codigoCli[5];
+	char CPF[13];
+	char telefoneCli[15];
+	char enderecoCli[50];
+	data nascimentoCli;
+} clientes;
+
 void cabecalho();
+
 // funcoes que administram as acoes relacionadas as roupas
 void GerenciarRoupas();
 void inserirDados();
@@ -31,6 +41,11 @@ void buscarCodigo();
 void editar_dados();
 void excluirItem();
 
+// funcoes que administram as acoes relacionadas ao cliente
+void gerenciarCliente();
+void inserirDadosCli();
+void excluirCliente();
+
 int main (){
   setlocale(LC_ALL, "Portuguese");
 
@@ -38,8 +53,8 @@ int main (){
   do {
      cabecalho();
   	printf("1 - gerenciar roupas\n");
-  	printf("2 - cadastrar cliente\n");
-  	printf("3 - cadastrar fornecedor\n");
+  	printf("2 - gerenciar cliente\n");
+  	printf("3 - gerenciar fornecedor\n");
   	printf("4 - cadastrar vendas\n");
   	printf("5 - Sair\n");
 
@@ -53,7 +68,7 @@ int main (){
       break;
 
       case 2:
-
+        gerenciarCliente();
       break;
 
       case 3:
@@ -486,7 +501,7 @@ void excluirItem(){
     fwrite(&rp,sizeof(roupas),1,temp);//gravando os dados no arquivo temp
    }
   }
-  fclose(estoque);//fechar o arq
+  fclose(estoque);//fechar o estoque
   fclose(temp);//fechar o temp
   fflush(stdin);
   
@@ -505,6 +520,171 @@ void excluirItem(){
   getch();
  } 
 }
+
+void gerenciarCliente(){
+	
+	int op;
+
+	do {
+		system("cls");
+		printf("-------------------ROUPAS-------------------\n");
+		printf("1.Cadastrar cliente\n");
+		printf("2.Remover cliente\n");
+		printf("3.Alterar dados do cliente \n");
+		printf("4.Pesquisar por nome\n");
+		printf("5.Pesquisar por codigo\n");
+		printf("6.Pesquisar por CPF\n");
+		printf("7.Listar clientes\n");
+		printf("8.Sair\n");
+		printf("-------------------------------------------\n");
+
+
+		printf("\nSelecione a opçao desejada: ");
+
+		scanf("%d", &op);
+
+		switch(op){
+
+      case 1:
+      	inserirDadosCli();
+      break;
+
+      case 2:
+      	excluirCliente();
+      break;
+
+      case 3:
+         // editar_dadosCli();
+      break;
+
+      case 4:
+      	//pesquisarCliente();
+      break;
+
+      case 5:
+      	//pesquisarCodigo();
+      break;
+
+      case 6:
+      //	buscarCPF();
+      break;
+
+      case 7:
+      //	ListarClientes();
+      break;
+
+       case 8:
+     	printf("ate mais!");
+      	getch();
+      break;
+
+      default:
+          printf("opçao invalida!");
+          getch();
+
+		}
+
+	}while(op !=8 );
+
+}
+
+void inserirDadosCli() {
+	FILE *CLIENTE;
+	CLIENTE = fopen("clientes.txt","ab");
+	clientes Cli;
+	
+	do {
+		
+		fflush(stdin);
+		printf("nome do cliente: ");
+		fgets(Cli.nomeCli, 50, stdin);
+		
+		fflush(stdin);
+		printf("CPF (000000000-00):");
+		fgets(Cli.CPF,13,stdin);
+		
+		fflush(stdin);
+		printf("codigo: ");
+		fgets(Cli.codigoCli,5,stdin);
+		
+		fflush(stdin);
+		printf("telefone: ");
+		fgets(Cli.telefoneCli,15,stdin);
+		
+		fflush(stdin);
+		printf("data de nascimento: ");
+		scanf("%d %d %d", &Cli.nascimentoCli.dia, &Cli.nascimentoCli.mes, &Cli.nascimentoCli.ano);
+		
+		fflush(stdin);
+		printf("endereço: ");
+		fgets(Cli.enderecoCli,50,stdin);
+		
+		fwrite(&Cli, sizeof(clientes), 1, CLIENTE);
+		
+		printf("\ndeseja continuar (s/n)?\n");
+
+	}while(getche() == 's');
+	fclose(CLIENTE);
+}
+
+void excluirCliente(){
+ FILE* CLIENTE;
+ FILE* tempCli;
+ 
+ clientes Cli;
+ char cpf[13];
+ 
+ CLIENTE = fopen("clientes.txt","rb");//abrir em modo rb leitura binaria
+ tempCli = fopen("tempCli.txt","wb");//abrir em modo wb ele limpa e grava binario
+ 
+ if(CLIENTE==NULL && tempCli==NULL){
+  printf("Problemas na abertura do arquivo!\n");
+  getch();
+ }
+ else{
+  cabecalho();
+  fflush(stdin);
+  printf("Digite o CPF do cliente que deseja remover: ");
+  fgets(cpf,13,stdin);
+  
+  while(fread(&Cli,sizeof(roupas),1,CLIENTE)==1){
+   if(strcmp(cpf,Cli.CPF)==0){
+    
+    		printf("-----------------CLIENTE---------------\n");
+			printf("nome: %s\n", Cli.nomeCli);
+			printf("CPF: %s\n",Cli.CPF);
+			printf("codigo: %s\n",Cli.codigoCli );
+			printf("telefone: %s\n",Cli.telefoneCli );
+			printf("data de nascimento: %d/%d/%d\n",Cli.nascimentoCli.dia,Cli.nascimentoCli.mes,Cli.nascimentoCli.ano);
+			printf("endereço: %s \n",Cli.enderecoCli);
+			printf("------------------------------------\n");
+    
+   }
+   else{
+    fwrite(&Cli,sizeof(clientes),1,tempCli);
+   }
+  }
+  fclose(CLIENTE);
+  fclose(tempCli);
+  fflush(stdin);
+  
+  printf("Deseja deletar o/a cliente (s/n)? ");
+  if(getche()=='s'){
+   if(remove("clientes.txt") == 0 && rename ("tempCli.txt","clientes.txt")==0)
+   {
+    printf("\nOperacao realizada com sucesso!");
+   }
+   else{
+    remove("tempCli.txt");
+   }
+  }
+  fclose(tempCli);
+  fclose(CLIENTE);
+  getch();
+ } 
+	
+}
+
 
 
 
