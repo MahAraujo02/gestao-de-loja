@@ -192,9 +192,6 @@ void inserirDados(){
 			printf("------------------------------------\n");
 
 			printf("insira o nome da peça: ");
-
-			printf("insira o nome da peÃ§a: ");
-
 			fgets(pdt.nome,50,stdin);
 
 			fflush(stdin);
@@ -205,24 +202,7 @@ void inserirDados(){
 			printf("insira o codigo: ");
 
 			fgets(pdt.codigo,10,stdin);
-			
-		estoque2 = fopen("Roupas_Disponiveis.txt", "rb");
-		   	if(estoque2 == NULL){
-				printf("Problemas na abertura do arquivo.");
-			}
-			else {
-				while(fread(&pdtLeitura, sizeof(produtos),1, estoque2) == 1){
-					if(strcmp(pdt.codigo,pdtLeitura.codigo) == 0){
-						printf("o codigo ja está no sistema.\n");
-
-			          }
-						return ;
-					}
-                   
-				}
-				fclose(estoque);
 			printf("insira a data de aquisiçao (dd mm aaaa): ");
-
 			gets(pdt.codigo);
 
 			printf("insira a data de aquisiçao (dd mm aaaa): ");
